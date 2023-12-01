@@ -168,3 +168,5 @@ def main():
     # create environment, DQN and start training
     model = nn.create([4, 30, 56], len(_actions), for_train=True)
     _create_and_train(None, device, model, args)
+
+main()
