@@ -33,6 +33,7 @@ class MarioEnvironment():
         world_name = 'SuperMarioBros-v0'
         self._world = 1
         self._stage = 1
+        self._powers = ['small', 'tall', 'fireball']
         self._selected = None
         if world_stage is not None and not random:
             assert(world_stage[0] in range(1, 9))
@@ -91,6 +92,8 @@ class MarioEnvironment():
         self.frames = deque([frame_]*self.n_frames, self.n_frames)
         self._last_x_pos = 0
         self._last_y_pos = 0
+        self._score = 0
+        self._curr_power = 'small'
 
         if not original:
             return torch.stack(tuple(self.frames))
@@ -102,6 +105,8 @@ class MarioEnvironment():
         noop_action: int = self._env_actions.index(['NOOP'])
         last_x_pos: int = 0
         last_y_pos: int = 0
+        score: int = 0
+        curr_power: str = 'small'
         reward = 0
         original_frames = []
 
@@ -111,6 +116,8 @@ class MarioEnvironment():
             frame, reward_, done, info = self._env.step(action)
             last_x_pos = info['x_pos']
             last_y_pos = info['y_pos']
+            score = info['score']
+            curr_power = info['status']
             reward += reward_
             self._world = info['world']
             self._stage = info['stage']
@@ -120,6 +127,15 @@ class MarioEnvironment():
 
             if original:
                 original_frames.append(frame)
+
+            if score > self._score:
+                reward += 5
+
+            if self._powers.index(curr_power) > self._powers.index(self._curr_power):
+                reward += 10
+            elif self._powers.index(curr_power) < self._powers.index(self._curr_power):
+                reward -= 10
+            self._curr_power = curr_power
 
             if done:
                 break
@@ -141,6 +157,7 @@ class MarioEnvironment():
         if 'right' in self.actions[action] and 'A' not in self.actions[action] and last_x_pos == self._last_x_pos:
             reward = -4
         self._last_x_pos = last_x_pos
+        self._score = score
 
         # preprocess image
         if self._preprocess is not None:

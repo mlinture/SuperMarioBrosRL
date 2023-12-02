@@ -61,3 +61,5 @@ def main(model=None, world_stage=None, skip=1):
 
     print(f'final reward: {reward}')
     print(f'number of steps: {step}')
+
+main()
