@@ -62,7 +62,7 @@ def _create_and_train(proc_index, device, model, args):
     memory = nn.train.RandomReplayMemory(args.pop('memory_size'))
 
     # train
-    save_path = args.pop('save_path')
+    save_path = args.pop('/Users/marcuslinture/Desktop/SuperMarioBrosRL/src/training.log')
     nn.train.train_dqn(model,
                        env,
                        memory=memory,

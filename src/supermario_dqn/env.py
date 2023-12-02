@@ -118,6 +118,7 @@ class MarioEnvironment():
             last_y_pos = info['y_pos']
             score = info['score']
             curr_power = info['status']
+            lives = info['life']
             reward += reward_
             self._world = info['world']
             self._stage = info['stage']
@@ -129,7 +130,7 @@ class MarioEnvironment():
                 original_frames.append(frame)
 
             if score > self._score:
-                reward += 5
+                reward += 15
 
             if self._powers.index(curr_power) > self._powers.index(self._curr_power):
                 reward += 10
@@ -156,9 +157,17 @@ class MarioEnvironment():
         # preprocess reward
         if 'right' in self.actions[action] and 'A' not in self.actions[action] and last_x_pos == self._last_x_pos:
             reward = -4
+        elif last_x_pos == self._last_x_pos:
+            reward -= 5
         self._last_x_pos = last_x_pos
         self._score = score
 
+        if reward>15:
+            reward = 15
+        elif reward<-15:
+            reward = -15
+
+        print(reward)
         # preprocess image
         if self._preprocess is not None:
             frame_ = self._preprocess(self._world, self._stage, frame)

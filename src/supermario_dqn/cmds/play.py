@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import argparse
 
 
-def main(model=None, world_stage=None, skip=1):
+def main(model=None, world_stage=None, skip=3):
 
     skip_ = skip
     show_processed = False
@@ -26,11 +26,12 @@ def main(model=None, world_stage=None, skip=1):
 
         env = MarioEnvironment(SIMPLE_ACTIONS,
                                4, lambda w, s, t: preprocess(w, s, t, 30, 56), world_stage=args['world_stage'])
-        model = nn.create([4, 30, 56], len(SIMPLE_ACTIONS), load_state_from=args['model'])
+        model = nn.create([4, 30, 56], len(SIMPLE_ACTIONS))#load_state_from=args['model']
         model.requires_grad_(False)
 
         skip_ = args['skip']
         show_processed = args['processed']
+        print('here')
     else:
         env = MarioEnvironment(SIMPLE_ACTIONS, 4, lambda w, s, t: preprocess(w, s, t, 30, 56), world_stage=world_stage)
 
@@ -62,4 +63,4 @@ def main(model=None, world_stage=None, skip=1):
     print(f'final reward: {reward}')
     print(f'number of steps: {step}')
 
-main()
+main(None)
