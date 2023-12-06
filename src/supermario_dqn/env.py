@@ -35,6 +35,7 @@ class MarioEnvironment():
         self._stage = 1
         self._powers = ['small', 'tall', 'fireball']
         self._selected = None
+        self._overall_score = 0
         if world_stage is not None and not random:
             assert(world_stage[0] in range(1, 9))
             assert(world_stage[1] in range(1, 5))

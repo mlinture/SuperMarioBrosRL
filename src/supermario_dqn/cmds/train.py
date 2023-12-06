@@ -118,7 +118,7 @@ def main():
                         help='where save trained model')
     parser.add_argument('--memory_size', type=int, default=100000,
                         help='size of replay memory')
-    parser.add_argument('--num_episodes', type=int, default=1000,
+    parser.add_argument('--num_episodes', type=int, default=300,
                         help='number of games to be played before end')
     parser.add_argument('--resume', type=str, default=None,
                         help='load from a checkpoint')
