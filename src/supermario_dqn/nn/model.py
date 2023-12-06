@@ -79,4 +79,6 @@ def best_action(model: DQN, state: torch.Tensor) -> int:
     """
     provides best action for given state
     """
-    return model(state).max(1)[1].view(1, 1).item()
+    hi = model(state).max(1)[1].view(1, 1).item()
+    print(model(state), hi)
+    return hi

@@ -4,13 +4,14 @@ Play a game loading a model.pt file
 
 from supermario_dqn.env import MarioEnvironment, SIMPLE_ACTIONS
 from supermario_dqn.preprocess import preprocess
+import torch
 import supermario_dqn.nn as nn
 import matplotlib.pyplot as plt
 import argparse
 
 
-def main(model=None, world_stage=None, skip=3):
-
+def main(model='/Users/marcuslinture/Desktop/SuperMarioBrosRL/src/training.log', world_stage=None, skip=5):
+    print(model)
     skip_ = skip
     show_processed = False
     if model is None:
@@ -30,18 +31,22 @@ def main(model=None, world_stage=None, skip=3):
         model.requires_grad_(False)
 
         skip_ = args['skip']
-        show_processed = args['processed']
+        show_processed = True
         print('here')
     else:
         env = MarioEnvironment(SIMPLE_ACTIONS, 4, lambda w, s, t: preprocess(w, s, t, 30, 56), world_stage=world_stage)
+        model = nn.create([4, 30, 56], len(SIMPLE_ACTIONS),load_state_from=model)
+        print('there')
 
     # play loop
     done = False
     step = 0
     i = 0
     reward = 0
-    [pr_state, _] = env.reset(original=True)
+    #print(env.reset())
+    pr_state = env.reset()
     plt.figure(1)
+    
     while not done:
         plt.clf()
         step += 1
@@ -63,4 +68,4 @@ def main(model=None, world_stage=None, skip=3):
     print(f'final reward: {reward}')
     print(f'number of steps: {step}')
 
-main(None)
+main()

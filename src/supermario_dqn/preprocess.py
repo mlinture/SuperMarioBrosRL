@@ -14,6 +14,16 @@ _mario_skin = 252  # , 16, 68]
 _mario_other = 172  # , 140, 0]
 
 
+def _preprocess0(tensor, resize_h, resize_w):
+    state_ = tensor[70:210, :, 0]
+
+    return transforms.Compose([
+        transforms.ToPILImage(),
+        transforms.Resize([resize_h, resize_w]),
+        transforms.ToTensor()
+    ])(state_)[0]
+
+
 def _preprocess1(tensor, resize_h, resize_w):
     """
     levels with light blue backgrounds and red ground

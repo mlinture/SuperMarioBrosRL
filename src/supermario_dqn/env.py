@@ -83,6 +83,7 @@ class MarioEnvironment():
             self._stage = r.sample(range(1, 5), 1)[0]
             self._env = JoypadSpace(gym.make('SuperMarioBros-{}-{}-v0'.format(self._world, self._stage)), self._env_actions)  # noqa
             frame = self._env.reset()
+        
 
         if self._render:
             self._env.render()
@@ -100,7 +101,7 @@ class MarioEnvironment():
         else:
             return torch.stack(tuple(self.frames)), frame
 
-    def step(self, action: int, original: bool = False, apply_times: int = 3):
+    def step(self, action: int, original: bool = False, apply_times: int = 5):
 
         noop_action: int = self._env_actions.index(['NOOP'])
         last_x_pos: int = 0
@@ -130,13 +131,21 @@ class MarioEnvironment():
                 original_frames.append(frame)
 
             if score > self._score:
-                reward += 15
+                reward += (score-self._score)/10
 
             if self._powers.index(curr_power) > self._powers.index(self._curr_power):
                 reward += 10
             elif self._powers.index(curr_power) < self._powers.index(self._curr_power):
                 reward -= 10
             self._curr_power = curr_power
+
+            if last_x_pos == self._last_x_pos:
+                reward -= 5
+
+            # if reward>15:
+            #     reward = 15
+            # elif reward<-15:
+            #     reward = -15
 
             if done:
                 break
@@ -157,17 +166,10 @@ class MarioEnvironment():
         # preprocess reward
         if 'right' in self.actions[action] and 'A' not in self.actions[action] and last_x_pos == self._last_x_pos:
             reward = -4
-        elif last_x_pos == self._last_x_pos:
-            reward -= 5
         self._last_x_pos = last_x_pos
         self._score = score
 
-        if reward>15:
-            reward = 15
-        elif reward<-15:
-            reward = -15
-
-        print(reward)
+        #print(reward)
         # preprocess image
         if self._preprocess is not None:
             frame_ = self._preprocess(self._world, self._stage, frame)

@@ -5,7 +5,7 @@ Handles supermario training
 import torch
 import os
 from supermario_dqn.env import MarioEnvironment, SIMPLE_ACTIONS
-import supermario_dqn.nn as nn
+import supermario_dqn.dueling_dqn as ddqn
 import supermario_dqn.preprocess as pr
 import argparse
 
@@ -45,29 +45,29 @@ def _create_and_train(proc_index, device, model, args):
                            world_stage=args.pop('world_stage'))
 
     # define callbacks
-    callbacks = [nn.train.callbacks.console_logger(start_episode=start_episode)]
+    callbacks = [ddqn.train.callbacks.console_logger(start_episode=start_episode)]
     log = args.pop('log')
     if log:
-        callbacks.append(nn.train.callbacks.log_episodes('episodes.csv', start_episode=start_episode))
+        callbacks.append(ddqn.train.callbacks.log_episodes('episodes.csv', start_episode=start_episode))
     ckpt_interval = args.pop('checkpoint')
     if ckpt_interval is not None:
-        callbacks.append(nn.train.callbacks.model_checkpoint('checkpoints', ckpt_interval, meta={
+        callbacks.append(ddqn.train.callbacks.model_checkpoint('checkpoints', ckpt_interval, meta={
             'actions': choosen_actions
         }, start_episode=start_episode))
     test = args.pop('test')
     if test is not None and (proc_index == 0 or proc_index is None):
-        callbacks.append(nn.train.callbacks.test_model(env, 'episodes_test.csv', test))
+        callbacks.append(ddqn.train.callbacks.test_model(env, 'episodes_test.csv', test))
 
     # define memory
-    memory = nn.train.RandomReplayMemory(args.pop('memory_size'))
+    memory = ddqn.train.RandomReplayMemory(args.pop('memory_size'))
 
     # train
     save_path = args.pop('save_path')
-    save_path = '/Users/marcuslinture/Desktop/SuperMarioBrosRL/src/training_1000.log'
-    nn.train.train_dqn(model,
+    save_path = '/Users/marcuslinture/Desktop/SuperMarioBrosRL/src/training.log'
+    ddqn.train.train_dqn(model,
                        env,
                        memory=memory,
-                       action_policy=nn.train.epsilon_greedy_choose(
+                       action_policy=ddqn.train.epsilon_greedy_choose(
                            args.pop('eps_start'),
                            args.pop('eps_end'),
                            args.pop('eps_decay'),
@@ -157,7 +157,7 @@ def main():
         print('training parameters:')
         for k, v in print_params.items():
             print('{:15} {}'.format(k, v))
-        with open('parameters.log', 'w') as params_log:
+        with open('parameters_ddqn.log', 'w') as params_log:
             for k, v in print_params.items():
                 params_log.write('{:15} {}\n'.format(k, v))
 
@@ -167,7 +167,8 @@ def main():
         return
 
     # create environment, DQN and start training
-    model = nn.create([4, 30, 56], len(_actions), for_train=True)
+    print(ddqn)
+    model = ddqn.model.create_dueling([4, 30, 56], len(_actions), for_train=True)
     _create_and_train(None, device, model, args)
 
 main()
