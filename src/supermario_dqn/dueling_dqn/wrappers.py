@@ -351,7 +351,7 @@ class EpisodicLifeMario(gym.Wrapper):
 
 
 def wrap_mario(env):
-    #env = NoopResetEnv(env, noop_max=30)
+    env = NoopResetEnv(env, noop_max=30)
     env = MaxAndSkipEnv(env, skip=4)
     env = EpisodicLifeMario(env)
     env = WarpFrame(env)
