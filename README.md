@@ -6,7 +6,7 @@ FIRST:
 From the home directory (SuperMarioBrosRL) run:
 $ python3 -m venv .venv
 $ source .venv/bin/activate
-$ pip3 install -r requirements
+$ pip3 install -r requirements.txt
 
 Then, cd into src.
 In our project there are three different models:
