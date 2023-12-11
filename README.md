@@ -1,5 +1,5 @@
 CS 175 Final Project  
-Marcus Linture, 54884520, mlinture@uci.edu 
+Marcus Linture, 54884520, mlinture@uci.edu  
 Emily Truong, 10368930, eytruong@uci.edu  
 
 FIRST:  
@@ -34,12 +34,12 @@ In our project there are three different models:
 3. PPO
   - For the PPO algorithm, there is one executable train_ppo.py
 
-  train_ppo.py:  
+  train_ppo.py:   
   BEFORE RUNNING  
     - In the same directory as train_ppo.py (which should be ppo_fork), create two folders titled 'logs' and 'train'. These files will be updated periodically during training to store statistics regarding the model and the model itself, respectively.
-  - If you would like to train, run the script as is; cd into ppo_fork, then run the command 'python3 ppo_fork.py'.
+  - If you would like to train, run the script as is; cd into ppo_fork, then run the command 'python3 train_ppo'.
   - If you would like to play, open train_ppo.py. Replace line 57 with 'play(YOUR_SAVED_ZIP_FILE, environment).
-    - For example, if you had a file saved in logs titled model_40000.zip, the command you would run is 'play(model_40000, environment).
+    - For example, if you had a file saved in logs titled model_40000.zip, the command you would run is 'play(model_40000, environment)'.
 
 As dicussed in our final presentation, there may be issues when running the above mentioned models. This is due to the discrepancies between the venv files from our initial fork and when we downloaded them locally in our first step.
 
