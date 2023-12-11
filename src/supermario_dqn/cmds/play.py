@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import argparse
 
 
-def main(model='/Users/marcuslinture/Desktop/SuperMarioBrosRL/src/training.log', world_stage=None, skip=5):
+def main(model=None, world_stage=None, skip=5):
     print(model)
     skip_ = skip
     show_processed = False

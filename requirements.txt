@@ -9,3 +9,6 @@ torch
 pandas
 torchvision
 argparse
+stable-baselines3
+tensorboard==2.14.0
+opencv-python

@@ -1,92 +1,80 @@
-supermario-dqn
-==============
+CS 175 Final Project
+Marcus Linture, 54884520, mlinture@uci.edu
+Emily Truong, 10368930, eytruong@uci.edu
 
-Deep Reinforcement Learning Agent for Super Mario Bros using OpenAI gym
-[gym-super-mario-bros](https://github.com/Kautenja/gym-super-mario-bros) environment
-
-
-## Usage
-
-~~~shell
-
-# create virtual env in the project folder
+FIRST:
+From the home directory (SuperMarioBrosRL) run:
 $ python3 -m venv .venv
 $ source .venv/bin/activate
-
-# install dependencies
 $ pip3 install -r requirements
 
-# use
-$ supermario_train -h
-usage: supermario_train [-h] [--batch_size BATCH_SIZE]
-                        [--fit_interval FIT_INTERVAL] [--gamma GAMMA]
-                        [--eps_start EPS_START] [--eps_end EPS_END]
-                        [--eps_decay EPS_DECAY]
-                        [--target_update TARGET_UPDATE]
-                        [--save_path SAVE_PATH] [--memory_size MEMORY_SIZE]
-                        [--num_episodes NUM_EPISODES] [--resume RESUME]
-                        [--checkpoint CHECKPOINT] [--random] [--render]
-                        [--world_stage WORLD_STAGE WORLD_STAGE]
-                        [--actions ACTIONS] [--test TEST] [--log]
+Then, cd into src.
+In our project there are three different models:
 
-Handle training
+1. DQN
+  - For the regular DQN model, there are two main scripts: train.py and play.py
 
-optional arguments:
-  -h, --help            show this help message and exit
-  --batch_size BATCH_SIZE
-                        size of each batch used for training
-  --fit_interval FIT_INTERVAL
-                        fit every `fit_interval` examples available
-  --gamma GAMMA         discount rate used for Q-values learning
-  --eps_start EPS_START
-                        start probability to choose a random action
-  --eps_end EPS_END     end probability to choose a random action
-  --eps_decay EPS_DECAY
-                        decay of eps probabilities
-  --target_update TARGET_UPDATE
-                        number of episodes between each target dqn update
-  --save_path SAVE_PATH
-                        where save trained model
-  --memory_size MEMORY_SIZE
-                        size of replay memory
-  --num_episodes NUM_EPISODES
-                        number of games to be played before end
-  --resume RESUME       load from a checkpoint
-  --checkpoint CHECKPOINT
-                        number of episodes between each network checkpoint
-  --random              choose randomly different worlds and stages
-  --render              rendering of frames, only for debug
-  --world_stage WORLD_STAGE WORLD_STAGE
-                        select specific world and stage
-  --actions ACTIONS     select actions used between ["simple"]
-  --test TEST           each `test` episodes network is used and tested over
-                        an episode
-  --log                 logs episodes results
+  train.py:
+  - To run train.py, run the command 'python3 -m supermario_dqn.cmds.train
+    - In line 66 of the script, there is an option for you to set a destination path, where upon completion of training, the model used will be saved to that pathname. Create a file of your choice and set the save_path variable to its string.
+    - If you would like to adjust any hyperparameters, it can be done by manually going through the main function's argparse default values and hard coding whatever value you see fit for each variable.
 
-# play
-$ supermario_play -h
-usage: play a game [-h] [--world_stage WORLD_STAGE WORLD_STAGE] [--skip SKIP]
-                   [--processed]
-                   model
+  play.py:
+  - To run play.py, run the command 'python3 -m supermario_dqn.cmds.play
+  - In the main function of the file (line 13), there is a parameter 'model' which is default set to None. If you have a previously trained model you would like to use to play the game, you can hardcode to set the default parameter to be the string of the pathname of the saved model.
 
-positional arguments:
-  model                 neural network model
+2. Dueling DQN
+  - For the dueling DQN model, there is one executable duel_train.py
 
-optional arguments:
-  -h, --help            show this help message and exit
-  --world_stage WORLD_STAGE WORLD_STAGE
-                        select a specific world and stage, world in [1..8],
-                        stage in [1..4]
-  --skip SKIP           number of frames to skip
-  --processed           shows frames processed for neural network
-~~~
+  duel_train.py:
+  - To run duel_train.py, run the command 'python3 -m supermario_dqn.cmds.duel_train
+    - In line 66 of the script, there is an option for you to set a destination path, where upon completion of training, the model used will be saved to that pathname. Create a file of your choice and set the save_path variable to its string.
+    - If you would like to adjust any hyperparameters, it can be done by manually going through the main function's argparse default values and hard coding whatever value you see fit for each variable.
 
-### Results
+3. PPO
+  - For the PPO algorithm, there is one executable train_ppo.py
 
-~~~bash
-$ supermario_play --skip 5 --world_stage 1 1 trained/train_1_1/model.pt
-~~~
+  train_ppo.py:
+  BEFORE RUNNING
+    - In the same directory as train_ppo.py (which should be ppo_fork), create two folders titled 'logs' and 'train'. These files will be updated periodically during training to store statistics regarding the model and the model itself, respectively.
+  - If you would like to train, run the script as is; cd into ppo_fork, then run the command 'python3 ppo_fork.py'.
+  - If you would like to play, open train_ppo.py. Replace line 57 with 'play(YOUR_SAVED_ZIP_FILE, environment).
+    - For example, if you had a file saved in logs titled model_40000.zip, the command you would run is 'play(model_40000, environment).
 
-| rewards | play gif |
-|---------|----------|
-|![](trained/train_1_1/rewards_over_steps.png)| ![](trained/train_1_1/play_gif.png)|
+As dicussed in our final presentation, there may be issues when running the above mentioned models. This is due to the discrepancies between the venv files from our initial fork and when we downloaded them locally in our first step.
+
+The best advice we can give is to follow each error message; if the message follows the lines of "seed/options doesn't exist", continue navigating through each file and delete the seed or options parameters until the scripts start working.
+
+In ./SuperMarioBrosRL/.venv/lib/python3.11/site-packages/gym/wrappers/time_limit.py, change the step function starting at line 39 to:
+
+ def step(self, action):
+        """Steps through the environment and if the number of steps elapsed exceeds ``max_episode_steps`` then truncate.
+
+        Args:
+            action: The environment step action
+
+        Returns:
+            The environment step ``(observation, reward, terminated, truncated, info)`` with `truncated=True`
+            if the number of steps elapsed >= max episode steps
+
+        """
+        hold = self.env.step(action)
+        if len(hold)==5:
+            observation, reward, terminated, truncated, info = hold
+            self._elapsed_steps += 1
+
+            #if self._elapsed_steps >= self._max_episode_steps:
+            #    truncated = True
+
+            return observation, reward, terminated, truncated, info
+        else:
+            observation, reward, terminated, info = hold
+            self._elapsed_steps += 1
+
+            #if self._elapsed_steps >= self._max_episode_steps:
+            #    truncated = True
+
+            return observation, reward, terminated, info
+
+        
+If there are any inquiries or issues running our repository, please do not hesitate to contact us at the emails written at the top of this document!
