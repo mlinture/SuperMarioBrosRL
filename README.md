@@ -1,7 +1,3 @@
-CS 175 Final Project  
-Marcus Linture, 54884520, mlinture@uci.edu  
-Emily Truong, 10368930, eytruong@uci.edu  
-
 FIRST:  
 From the home directory (SuperMarioBrosRL) run:  
 $ python3 -m venv .venv  
